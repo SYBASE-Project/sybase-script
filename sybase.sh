@@ -15,9 +15,12 @@ echo "select a server to start:"
 ls RUN_*
 read NAME
 if [ $NAME = "" ]; then
-echo "enter a valid server name"
+echo "server name cannot to be empty!!"
+elif [ $NAME != *,RUN_*,* ]; then
+echo "please enter a valid server name"
 else
-echo " server found"
+echo " server found "
+echo " $NAME server starting... "
 pause 02
 fi
 startserver -f $NAME
