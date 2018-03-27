@@ -14,6 +14,10 @@ $SYBASE
 
 ### *4.auto source env*   ( wip )
 
+### 5.dump database       ( wip )
+
+### 6.crontab schedule    ( wip )
+
 
 ## to start this script
 
