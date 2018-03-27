@@ -7,12 +7,13 @@ if [ $(id -u) != "0" ]; then
 fi
  
 #function start here
+export SERVER=/opt/*/ASE*/install
 function start_server
 {
 #echo "press 's' to start server"
 cd $SERVER 
 echo "select a server to start:"
-ls RUN_*
+ls RUN_* --format single-columnn
 read NAME
 if [ $NAME = "" ]; then
 echo "server name cannot to be empty!!"
@@ -21,7 +22,7 @@ echo "please enter a valid server name"
 else
 echo " server found "
 echo " $NAME server starting... "
-pause 02
+pause 04
 fi
 startserver -f $NAME
 }
