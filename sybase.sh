@@ -10,21 +10,21 @@ fi
 export SERVER=/opt/*/ASE*/install
 function start_server
 {
-#echo "press 's' to start server"
 cd $SERVER 
 echo "select a server to start:"
-ls RUN_* --format single-columnn
+ls RUN_* --format single-column
 read NAME
-if [ $NAME = "" ]; then
-echo "server name cannot to be empty!!"
+if [ "$NAME"!=" " ]; then
+echo "server name cannot to be empty!! press s and re try"
+return 1
 elif [ $NAME != *,RUN_*,* ]; then
-echo "please enter a valid server name"
+echo "please enter a valid server name press s and re try"
+return 1
 else
-echo " server found "
 echo " $NAME server starting... "
 pause 04
 fi
-startserver -f $NAME
+ startserver -f $NAME
 }
 
 echo  "enter s to start server, q to quit"
@@ -36,8 +36,8 @@ read num
 case $num in
 s) start_server ;;
 q) exit ;;
-#h) HELLO ;;
-* ) echo "enter somerhing"
+#c) create_server ;;
+* ) echo "enter "s" or "q" "
 esac
 done 
 #TEMP
