@@ -13,7 +13,7 @@ function start_server
 #echo "press 's' to start server"
 cd $SERVER 
 echo "select a server to start:"
-ls RUN_* --format single-columnn
+ls RUN_* --format single-column
 read NAME
 if [ $NAME = "" ]; then
 echo "server name cannot to be empty!!"
