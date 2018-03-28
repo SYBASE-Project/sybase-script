@@ -14,7 +14,7 @@ cd $SERVER
 echo "select a server to start:"
 ls RUN_* --format single-column
 read NAME
-if [ "$NAME"!=" " ]; then
+if [ "$NAME" = " " ]; then
 echo "server name cannot to be empty!! press s and re try"
 return 1
 elif [ $NAME != *,RUN_*,* ]; then
