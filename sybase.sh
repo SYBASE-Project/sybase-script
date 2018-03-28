@@ -17,12 +17,9 @@ read NAME
 if [ "$NAME" = " " ]; then
 echo "server name cannot to be empty!! press s and re try"
 return 1
-elif [ $NAME != *,RUN_*,* ]; then
-echo "please enter a valid server name press s and re try"
-return 1
 else
 echo " $NAME server starting... "
-pause 04
+sleep 04
 fi
  startserver -f $NAME
 }
