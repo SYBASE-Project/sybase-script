@@ -1,5 +1,8 @@
 #!/bin/bash
 
+. /opt/sybase/SYBASE.sh
+. /opt/sybase/SYBASE.csh
+. /opt/sybase/SYBASE.env
 
 if [ $(id -u) != "0" ]; then
     echo "You must be the superuser to run this script" >&2
