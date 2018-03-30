@@ -13,12 +13,18 @@ mkdir -p  crontab
 echo "crontab directory created"
 else
 echo "crontab directory already exits"
+echo "cron will start wait for 3 seconds.."
+for (( i=3; i>0; i--)); do
+  sleep 1 &
+  printf "processing $i \r"
+  wait
+done
 fi
-sleep 03
+#sleep 03
 cd $CRON/crontab
 touch dump.sh
 chmod 755 dump.sh
-echo "##############################################################################"
+echo "*****************************************************************************"
 echo "please enter login type, server name, password, database name, path to dump"
 echo "*****************************************************************************"
 echo "enter login type (sa)"
@@ -38,9 +44,11 @@ dump database $dbname to $dpath
 go
 EOF
 echo "!!"
-" >> dump.sh
-echo "crontab scheduled sucessfully"
-
+" > dump.sh
+echo "-----------------------------------------------------------------------------------"
+echo "use this script path to schedule crontab \"/opt/sybase/ASE-16_0/crontab/dump.sh\" "
+echo " and enter scheluding \"time\"  * * * * *"
+exec crontab -e
 }
 #case
 echo  "enter c to start crontab, q to quit"
