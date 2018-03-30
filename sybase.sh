@@ -16,13 +16,13 @@ cd $srv
 clear
 echo "Enter the name of the sever:"
 read srv_name
-echo
+clear
 echo "Enter Password for the server($srv_name):"
 read password
-echo
+clear
 echo "enter the host name(eg:localhost):"
 read host_name
-echo
+clear
 echo "Enter a Port Number:"
 read port_num
 clear
@@ -107,13 +107,13 @@ echo
 echo
 echo "Enter your new BACKUP SERVER name:"
 read srvb_name
-echo
+clear
 echo "Enter Existing Adaptive Server Name:"
 read srve_name
-echo
+clear
 echo "enter the host name(eg:localhost):"
 read host_name
-echo
+clear
 echo "Enter a Port Number:"
 read port_num
 clear
@@ -191,16 +191,89 @@ exit ;;
 esac
 
 }
+#DATBASE AND TABLE CHECK SCRIPT
+#functio 1(databasecheck) 
+function dbcheck
+{
+clear
+echo 
+echo "Enter the database name:"
+read db
+echo 
+isql64 -U$login  -S$srv -P$password -D$db<< eof
+select name from sysobjects where type='U'
+go > $HOME/Desktop/db.txt 
+eof
+cd $HOME/Desktop
+chmod 777 db.txt
+#database check in output file
+
+ fn=db.txt
+ sea=$(grep -rHn "$db" $fn)
+ if [ $? -ne 0 ]
+ then
+ echo "BINGO.."
+ echo "$db FOUND IN THE SERVER($srv)"
+ else
+ echo "OOPS.."
+ echo "$db NOT FOUND IN THE $srv"
+ fi
+
+}
+#functio 2(table check)
+
+function tblcheck
+{
+clear
+echo "Enter Database name :"
+read db
+echo
+echo "Enter table name:"
+read tbl
+echo
+clear
+isql64 -U$login  -S$srv -P$password -D$db<< eof
+select name from $db..sysobjects where type="U" 
+go > $HOME/Desktop/tb.txt
+eof
+echo
+echo "logging in to the severr.."
+echo
+echo 
+sleep 03
+cd $HOME/Desktop
+chmod 777 tb.txt
+
+#Table check in output file
+
+ fn=tb.txt
+ sea=$(grep -rHn "$tbl" $fn)
+ if [ $? -ne 0 ]
+ then
+ echo "BINGO.."
+ echo "$tbl FOUND IN THE DATABASE($db)"
+ else
+ echo "OOPS.."
+ echo "$tbl NOT FOUND IN THE $db"
+ fi
+}
 
 
- 
+
+#START SERVER
 #function start here
 export SERVER=/opt/*/ASE*/install
 function start_server
 {
+clear
 cd $SERVER 
 echo "select a server to start:"
+echo
+echo "**********************************"
 ls RUN_* --format single-column
+echo "**********************************"
+echo
+echo "Input the name of the server to start:"
 read NAME
 if [ "$NAME" = " " ]; then
 echo "server name cannot to be empty!! press s and re try"
@@ -211,7 +284,42 @@ sleep 04
 fi
  startserver -f $NAME
 }
-
+#loop function for invalid choice
+function loop
+{
+clear
+echo  
+echo "***************************"
+echo "1.Build adaptive server"
+echo "2.Build Back_Up server"
+echo "3.Start Server"
+echo "4.Crontab Schedule"
+echo "5.Database"
+echo "6.Table check"
+echo "7.Install Sample DataBase (Pubs)"
+echo "8.EXIT"
+echo "***************************"
+echo
+echo "Enter a choice : "
+echo
+read x
+#case
+case $x in
+1) server_build ;;
+2) backup_server ;;
+3) start_server ;;
+4) crontab ;;
+5) dbcheck ;;
+6) tblcheck ;;
+7) pubs ;;
+8) exit ;;
+*) echo "Wait.. what is that....(:-)"
+echo "Enter a valid choice" 
+sleep 01
+loop
+esac
+}
+#CRONTAB
 #function starts here
 function crontab
 {
@@ -260,23 +368,63 @@ echo " and enter scheluding \"time\"  * * * * *"
 exec crontab -e
 }
 
+#PUBS 2 INSTALL SCRIPT
+#!/bin/bash
+function pubs
+{
+clear
+export scpath="/opt/sybase/ASE-16_0/scripts"
+cd $scpath
+echo
+echo "select a pub's database from below list:"
+echo
+echo "***************************************"
+ls installpubs* --format single-column
+echo "***************************************"
+read pubname
+clear
+if [ ! -f $pubname ]; then
+echo "********************************"
+echo "the $pubname not found try again"
+elif [ $pubname = "" ]; then
+echo "!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "field cannot to be empty"
+else
+echo "$pubname found and enter required information"
+echo "##############################################"
+fi
+echo "enter server name"
+read uname
+echo "----------------------------------------------"
+echo "enter password"
+read pss
+echo 
+echo "server_name = $uname
+login_name = sa
+password = $pss"
+echo 
+xterm -hold -e "isql64 -Usa -S$uname -P$pss -i$pubname" 
+sleep 02
+return 0
+}
+
+
 #menu
 echo  
-echo "***************************"
+echo "*********************************"
 echo "1.Build adaptive server"
 echo "2.Build Back_Up server"
 echo "3.Start Server"
 echo "4.Crontab Schedule"
-echo "5.Database and Table check"
-echo "6.Install Sample DataBase (Pubs)"
-echo "press \"q\" to quit"
-echo "***************************"
+echo "5.Database check"
+echo "6.table check"
+echo "7.Install Sample DataBase (Pubs)"
+echo "8.EXIT"
+echo "**********************************"
 echo
 echo "Enter a choice : "
 echo
 
-while [ x != "q" ]
-do
 read x
 #case
 case $x in
@@ -284,7 +432,11 @@ case $x in
 2) backup_server ;;
 3) start_server ;;
 4) crontab ;;
-q) exit ;;
-* ) echo "enter "choice" or "q" "
+5) dbcheck ;;
+6) tblcheck ;;
+7) pubs ;;
+8) exit ;;
+*) echo "Enter a valid choice " 
+loop
 esac
-done 
+
