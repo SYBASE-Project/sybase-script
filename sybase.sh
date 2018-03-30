@@ -257,6 +257,7 @@ echo "!!"
 echo "-----------------------------------------------------------------------------------"
 echo "use this script path to schedule crontab \"/opt/sybase/ASE-16_0/crontab/dump.sh\" "
 echo " and enter scheluding \"time\"  * * * * *"
+sleep 05
 exec crontab -e
 }
 
