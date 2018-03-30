@@ -8,15 +8,15 @@ $SYBASE
 
 ### *1.start_server*     ( ~~done~~ )
 
-### *2.quit*             ( ~~done~~ )
+### *2.quit*             ( ~~done~~ )
 
-### *3.create_server*     ( wip )
+### *3.create_server*     ( --done-- )
 
-### *4.auto source env*   ( wip )
+### *4.auto source env*   ( --done-- )
 
 ### 5.dump database       ( wip )
 
-### 6.crontab schedule    ( wip )
+### 6.crontab schedule    ( --done-- )
 
 
 ## to start this script
