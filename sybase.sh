@@ -1,6 +1,4 @@
 #!/bin/bash
-. /opt/sybase/SYBASE.sh
-. /opt/sybase/SYBASE.env
 
 
 if [ $(id -u) != "0" ]; then
@@ -191,64 +189,66 @@ echo "GOOD BYE"
  exit
 exit ;;
 esac
-
 }
 
 
 
 #DATBASE AND TABLE CHECK SCRIPT
-#functio (dbtb)
 function dbtb
 {
 clear
+echo 
+clear
 echo "server name:"
-read srv1
+read servname
 echo
 echo "login name:"
-read login1
+read loginame
 echo
 echo "password:"
-read password1
+read spassword
 echo
 clear
-echo "****************************"
-echo "1.Database check"
-echo "2.Table check"
-echo "3.Quit to main menu"
-echo "****************************"
-echo
-echo  "select your choice"
-read choice
-case $choice in
-1) dbcheck ;;
-2) tbcheck ;;
-3) exit ;;
-*) echo "wrong choice"
-dbtbloop
-esac
-#function dbcheck
+echo "**********************"
+echo "1.database check"
+echo "2.table check"
+echo "3.exit to main menu"
+echo "**********************"
+read num
+if [ $num == 1 ]; then
+dbcheck
+elif [ $num == 2 ]; then
+tbcheck
+elif [ $num == 3 ]; then 
+loop
+else
+loopdbtb
+fi
+}
+#function DBCHECK
 function dbcheck
 {
-clear
 cd $HOME/Desktop
 echo "enter the db name to check"
 read db
 clear
-isql64 -U$login1 -S$srv1 -P$password1 <<eof
-select name from sysobjects where type="U"
+isql64 -U$loginame -S$servname -P$spassword <<eof
+select name from sysdatabases
 go > $HOME/Desktop/temp.txt
 eof
+echo
 chmod 777 temp.txt
-scan=$(cat temp.txt | grep -v wildcard | grep -o $db) 
+scan=$(cat temp.txt | grep -v wildcard | grep -o $db)
+echo
 if [ "$scan" == "$db" ]; then
-echo "$db FOUND IN THE SERVER:$srv1"
+echo "$db FOUND IN THE SERVER:$servname"
 else 
-echo "OOPS...$db NOT FOUND IN $srv1"
+echo "OOPS...$db NOT FOUND IN $servname"
 sleep 03
+clear
 fi
-
-}
 loopdbtb
+}
 #function tbcheck
 function tbcheck
 {
@@ -259,19 +259,22 @@ read db1
 echo "enter the table name to search:"
 read tb
 clear
-
-isql64 -U$login1 -S$srv1 -P$password1 -D$db1<<eof
+isql64 -U$loginame -S$servname -P$spassword -D$db1 <<eof
 select name from sysobjects where type="U"
 go > $HOME/Desktop/temp.txt
 eof
+echo 
 chmod 777 temp.txt
-scan_tb=$(cat temp.txt | grep -v wildcard | grep -o $tb) 
-if [ "$scan_tb" == "$tb" ]; then
+scanf=$(cat temp.txt | grep -v wildcard | grep -o $tb) 
+echo
+if [ "$scanf" == "$tb" ]; then
 echo "$tb FOUND IN :$db1"
 else 
 echo "OOPS...$tb NOT FOUND IN $db1"
 sleep 03
+clear
 fi
+loopdbtb
 }
 
 #Function loopdbtb
@@ -289,12 +292,12 @@ read choice
 case $choice in
 1) dbcheck ;;
 2) tbcheck ;;
-3) exit ;;
+3) loop;;
 *) echo "wrong choice"
 loopdbtb
 esac
 }
-}
+
 
 
 #START SERVER
