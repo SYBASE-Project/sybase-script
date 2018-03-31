@@ -1,8 +1,5 @@
 #!/bin/bash
 
-. /opt/sybase/SYBASE.sh
-. /opt/sybase/SYBASE.csh
-. /opt/sybase/SYBASE.env
 
 if [ $(id -u) != "0" ]; then
     echo "You must be the superuser to run this script" >&2
@@ -19,13 +16,13 @@ cd $srv
 clear
 echo "Enter the name of the sever:"
 read srv_name
-echo
+clear
 echo "Enter Password for the server($srv_name):"
 read password
-echo
+clear
 echo "enter the host name(eg:localhost):"
 read host_name
-echo
+clear
 echo "Enter a Port Number:"
 read port_num
 clear
@@ -110,13 +107,13 @@ echo
 echo
 echo "Enter your new BACKUP SERVER name:"
 read srvb_name
-echo
+clear
 echo "Enter Existing Adaptive Server Name:"
 read srve_name
-echo
+clear
 echo "enter the host name(eg:localhost):"
 read host_name
-echo
+clear
 echo "Enter a Port Number:"
 read port_num
 clear
@@ -196,25 +193,167 @@ esac
 }
 
 
- 
+
+#DATBASE AND TABLE CHECK SCRIPT
+#functio (dbtb)
+function dbtb
+{
+clear
+echo "server name:"
+read srv1
+echo
+echo "login name:"
+read login1
+echo
+echo "password:"
+read password1
+echo
+clear
+echo "****************************"
+echo "1.Database check"
+echo "2.Table check"
+echo "3.Quit to main menu"
+echo "****************************"
+echo
+echo  "select your choice"
+read choice
+case $choice in
+1) dbcheck ;;
+2) tbcheck ;;
+3) exit ;;
+*) echo "wrong choice"
+dbtbloop
+esac
+#function dbcheck
+function dbcheck
+{
+clear
+cd $HOME/Desktop
+echo "enter the db name to check"
+read db
+clear
+isql64 -U$login1 -S$srv1 -P$password1 <<eof
+select name from sysobjects where type="U"
+go > $HOME/Desktop/temp.txt
+eof
+chmod 777 temp.txt
+scan=$(cat temp.txt | grep -v wildcard | grep -o $db) 
+if [ "$scan" == "$db" ]; then
+echo "$db FOUND IN THE SERVER:$srv1"
+else 
+echo "OOPS...$db NOT FOUND IN $srv1"
+sleep 03
+fi
+
+}
+loopdbtb
+#function tbcheck
+function tbcheck
+{
+clear
+cd $HOME/Desktop
+echo "enter the db name to check"
+read db1
+echo "enter the table name to search:"
+read tb
+clear
+
+isql64 -U$login1 -S$srv1 -P$password1 -D$db1<<eof
+select name from sysobjects where type="U"
+go > $HOME/Desktop/temp.txt
+eof
+chmod 777 temp.txt
+scan_tb=$(cat temp.txt | grep -v wildcard | grep -o $tb) 
+if [ "$scan_tb" == "$tb" ]; then
+echo "$tb FOUND IN :$db1"
+else 
+echo "OOPS...$tb NOT FOUND IN $db1"
+sleep 03
+fi
+}
+
+#Function loopdbtb
+function loopdbtb
+{
+clear
+echo "****************************"
+echo "1.Database check"
+echo "2.Table check"
+echo "3.Quit to main menu"
+echo "****************************"
+echo
+echo  "select your choice"
+read choice
+case $choice in
+1) dbcheck ;;
+2) tbcheck ;;
+3) exit ;;
+*) echo "wrong choice"
+loopdbtb
+esac
+}
+}
+
+
+#START SERVER
 #function start here
 export SERVER=/opt/*/ASE*/install
 function start_server
 {
+clear
 cd $SERVER 
 echo "select a server to start:"
+echo
+echo "**********************************"
 ls RUN_* --format single-column
+echo "**********************************"
+echo
+echo "Input the name of the server to start:"
 read NAME
 if [ "$NAME" = " " ]; then
 echo "server name cannot to be empty!! press s and re try"
 return 1
 else
 echo " $NAME server starting... "
-sleep 04
+sleep 03
 fi
  startserver -f $NAME
 }
-
+loop
+#loop function for invalid choice
+function loop
+{
+clear
+echo  
+echo "***************************"
+echo "1.Build adaptive server"
+echo "2.Build Back_Up server"
+echo "3.Start Server"
+echo "4.Crontab Schedule"
+echo "5.Database and table check"
+echo "6.Install Sample DataBase (Pubs)"
+echo "7.EXIT"
+echo "***************************"
+echo
+echo "Enter a choice : "
+echo
+read x
+#case
+case $x in
+1) server_build ;;
+2) backup_server ;;
+3) start_server ;;
+4) crontab ;;
+5) dbtb ;;
+6) pubs ;;
+7) exit ;;
+*) echo "Wait.. what is that....(:-)"
+echo "Enter a valid choice" 
+sleep 01
+loop
+esac
+}
+#CRONTAB
 #function starts here
 function crontab
 {
@@ -260,26 +399,32 @@ echo "!!"
 echo "-----------------------------------------------------------------------------------"
 echo "use this script path to schedule crontab \"/opt/sybase/ASE-16_0/crontab/dump.sh\" "
 echo " and enter scheluding \"time\"  * * * * *"
-sleep 05
 exec crontab -e
 }
-
-#function pubs
+loop
+#PUBS 2 INSTALL SCRIPT
+#!/bin/bash
 function pubs
 {
+clear
 export scpath="/opt/sybase/ASE-16_0/scripts"
 cd $scpath
-echo "------------------------------------------"
-echo "select a pub's database from below list "
-ls installpubs* --format single-column
-echo "------------------------------------------"
+echo
+echo "select a pub's database from below list:"
+echo
+echo "***************************************"
+ls installpubs* | nl
+echo "***************************************"
 read pubname
+clear
 if [ ! -f $pubname ]; then
 echo "********************************"
 echo "the $pubname not found try again"
+pubs
 elif [ $pubname = "" ]; then
 echo "!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "field cannot to be empty"
+pubs
 else
 echo "$pubname found and enter required information"
 echo "##############################################"
@@ -298,24 +443,22 @@ xterm -hold -e "isql64 -Usa -S$uname -P$pss -i$pubname"
 sleep 02
 return 0
 }
-
+loop
 #menu
 echo  
-echo "***************************"
+echo "*********************************"
 echo "1.Build adaptive server"
 echo "2.Build Back_Up server"
 echo "3.Start Server"
 echo "4.Crontab Schedule"
-echo "5.Database and Table check"
+echo "5.datbase and table check"
 echo "6.Install Sample DataBase (Pubs)"
-echo "press \"q\" to quit"
-echo "***************************"
+echo "7.EXIT"
+echo "**********************************"
 echo
 echo "Enter a choice : "
 echo
 
-while [ x != "q" ]
-do
 read x
 #case
 case $x in
@@ -323,8 +466,9 @@ case $x in
 2) backup_server ;;
 3) start_server ;;
 4) crontab ;;
+5) dbtb ;;
 6) pubs ;;
-q) exit ;;
-* ) echo "enter "choice" or "q" "
+7) exit ;;
+*) echo "Enter a valid choice " 
+loop
 esac
-done 
