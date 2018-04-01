@@ -336,8 +336,9 @@ echo "2.Build Back_Up server"
 echo "3.Start Server"
 echo "4.Crontab Schedule"
 echo "5.Database and table check"
-echo "6.Install Sample DataBase (Pubs)"
-echo "7.EXIT"
+echo "6.Device operations"
+echo "7.Install Sample DataBase (Pubs)"
+echo "8.EXIT"
 echo "***************************"
 echo
 echo "Enter a choice : "
@@ -350,8 +351,9 @@ case $x in
 3) start_server ;;
 4) crontab ;;
 5) dbtb ;;
-6) pubs ;;
-7) exit ;;
+6) xxx ;;
+7) pubs ;;
+8) exit ;;
 *) echo "Wait.. what is that....(:-)"
 echo "Enter a valid choice" 
 sleep 01
@@ -449,6 +451,164 @@ sleep 02
 return 0
 }
 loop
+
+#device operations----------------------------------------------------------------------
+function xxx
+{
+clear
+maindev
+function maindev
+{
+clear
+echo "enter server name:"
+read dservname
+echo
+echo "login name:"
+read dloginame
+echo
+echo "password:"
+read dpassword
+echo 
+clear
+devmenu
+}
+function devmenu
+{
+clear
+echo "******************************"
+echo "1.Create new device"
+echo "2.create database on device"
+echo "3.Resize device"
+echo "4.drop device"
+echo "5.Quit to main menu"
+echo "******************************"
+read devchoice
+case $devchoice in
+1) devnew ;;
+2) dbase ;;
+3) devresize ;;
+4) dropdev ;;
+5) mainmenuconnect ;;
+*) echo "Invalid choice"
+clear
+devmenu
+esac
+}
+
+function devnew
+{
+echo "Enter device name:"
+read devname
+clear
+echo "Enter size:"
+read devsize
+cd $HOME
+mkdir $devname
+chmod 777 $devname
+cd $HOME/$devname
+path=$(pwd)
+clear
+echo 
+echo "*********************"
+echo "device name:$devname"
+echo "device size:$devsize"
+echo "path:$path"
+echo "*********************"
+sleep 03
+clear
+echo "creating device..."
+isql64 -Usa -Stest -Ptest123 -Dmaster <<eof
+disk init
+name="$devname",
+size="$devsize",
+physname="$path/$devname.dat",
+directio="true"
+go
+eof
+sleep 02
+clear 
+echo "device created successfully"
+sleep 03
+devmenu
+}
+function dbase
+{
+clear
+echo "Enter database to create:"
+read dbname
+echo
+echo "Enter the data device name :"
+read datadevname
+echo
+echo "Enter log device name:"
+read logdevname
+echo
+echo " size:"
+read sizedb
+echo
+clear
+isql64 -U$dloginame -S$dservname -P$dpassword -Dmaster <<eof
+create database $dbname 
+on $datadevname='$sizedb'
+log on $logdevname='$sizedb'
+go
+eof
+echo
+echo "database $dbname successfully created"
+sleep 03
+devmenu
+}
+function devresize
+{
+clear
+echo "enter the device name you want to resize:"
+read ddevname
+echo
+echo "Enter the size(eg:10M):"
+read ddevsize
+echo
+clear
+isql64 -U$dloginame -S$dservname -P$dpassword -Dmaster <<eof
+disk resize
+name = “$ddevname”,
+size ="$ddevsize"
+go
+eof
+echo
+echo "disk resize complete"
+sleep 09
+clear
+devmenu
+}
+function dropdev
+{
+clear
+echo "enter the device name u want to drop:"
+read devname
+echo
+isql64 -U$dloginame -S$dservname -P$dpassword -Dmaster <<eof
+sp_dropdevice $devname
+go
+eof
+echo
+clear
+echo "Droped Successfully.."
+sleep 03
+clear
+devmenu
+}
+function mainmenuconnect
+{
+loop
+}
+}
+
+#device operations-------------------------------------------------------------------
+
+
+
+
+
 #menu
 echo  
 echo "*********************************"
@@ -457,8 +617,9 @@ echo "2.Build Back_Up server"
 echo "3.Start Server"
 echo "4.Crontab Schedule"
 echo "5.datbase and table check"
-echo "6.Install Sample DataBase (Pubs)"
-echo "7.EXIT"
+echo "6.Device operations"
+echo "7.Install Sample DataBase (Pubs)"
+echo "8.EXIT"
 echo "**********************************"
 echo
 echo "Enter a choice : "
@@ -472,8 +633,9 @@ case $x in
 3) start_server ;;
 4) crontab ;;
 5) dbtb ;;
-6) pubs ;;
-7) exit ;;
+6) xxx ;;
+7) pubs ;;
+8) exit ;;
 *) echo "Enter a valid choice " 
 loop
 esac
