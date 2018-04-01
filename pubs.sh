@@ -1,6 +1,6 @@
 #!/bin/bash
-#function pd
-#{
+function pd
+{
 export scpath="/opt/sybase/ASE-16_0/scripts"
 #function pubs
 function pubs ()
@@ -84,3 +84,5 @@ echo "enter a valid choice"
 fi
 }
 loopi
+}
+pd
