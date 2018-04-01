@@ -11,7 +11,7 @@ function server_build
 {
 #Enter '1'to build adaptive server
 #acquiring needed datails
-export srv=/opt/*/ASE*/init/sample_resource_files
+export srv="$SYBASE/ASE*/init/sample_resource_files"
 cd $srv
 clear
 echo "Enter the name of the sever:"
@@ -42,7 +42,7 @@ sleep 04
 
 #create and configure server.rs file
 #begin---------------------------------------------------------------------
-export srv=/opt/*/ASE*/init/sample_resource_files
+export srv="$SYBASE/ASE*/init/sample_resource_files"
 mkdir $HOME/$srv_name
 cd $HOME
 chmod 777 $srv_name
@@ -302,7 +302,7 @@ esac
 
 #START SERVER
 #function start here
-export SERVER=/opt/*/ASE*/install
+export SERVER="$SYBASE/ASE*/install"
 function start_server
 {
 clear
@@ -362,7 +362,7 @@ esac
 #function starts here
 function crontab
 {
-export CRON="/opt/*/ASE-16_0"
+export CRON="$SYBASE/ASE-16_0"
 cd $CRON
 if [ ! -d crontab ]; then
 mkdir -p  crontab
@@ -412,7 +412,7 @@ loop
 function pubs
 {
 clear
-export scpath="/opt/sybase/ASE-16_0/scripts"
+export scpath="$SYBASE/ASE-16_0/scripts"
 cd $scpath
 echo
 echo "select a pub's database from below list:"
