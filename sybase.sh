@@ -315,8 +315,8 @@ echo "**********************************"
 echo
 echo "Input the name of the server to start:"
 read NAME
-if [ "$NAME" = " " ]; then
-echo "server name cannot to be empty!! press s and re try"
+if [ ! -f "$NAME" ]; then
+echo "np server found or server name cannot to be empty!! "
 return 1
 else
 echo " $NAME server starting... "
