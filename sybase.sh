@@ -570,7 +570,7 @@ echo
 clear
 isql64 -U$dloginame -S$dservname -P$dpassword -Dmaster <<eof
 disk resize
-name = “$ddevname”,
+name = "$ddevname",
 size ="$ddevsize"
 go
 eof
