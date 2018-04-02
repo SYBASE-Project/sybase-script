@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+   	echo "This script must be run as root type: sudo ./installscript" 
+   	exit 1
+fi
 function pd
 {
 export scpath="/opt/sybase/ASE-16_0/scripts"
@@ -65,24 +69,24 @@ sleep 02
 }
 #}
 #end of inner function
-function loopi
-{
-echo "****************************"
-echo "1.Pubs installation"
-echo "2.DBCCDB installation"
-echo "3.Quit to main menu"
-echo "****************************"
-echo
-echo  "select your choice"
-read choice
-if [ $choice == "1" ]; then
-pubs
-elif [ $choice == "2" ]; then
-dbccdb
-else
-echo "enter a valid choice"
-fi
-}
-loopi
+
+sudo apt-get install dialog
+opn=(dialog --separate-output --checklist "please Select an Option:" 22 76 16)
+options=(1 "pubs" off
+2 "dbccdb" off)
+choice=$("${opn[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
+
+#read choice
+for choice in $choice
+do
+case $choices in
+1)echo "installings pubs"
+ pubs ;;
+2)echo "installing dbccdb"
+ dbccdb ;;
+esac
+done
+
 }
 pd
