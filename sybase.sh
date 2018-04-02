@@ -316,8 +316,8 @@ echo
 echo "Input the name of the server to start:"
 read NAME
 if [ ! -f "$NAME" ]; then
-echo "np server found or server name cannot to be empty!! "
-return 1
+echo "no server found or server name cannot to be empty!! "
+start_server
 else
 echo " $NAME server starting... "
 sleep 03
