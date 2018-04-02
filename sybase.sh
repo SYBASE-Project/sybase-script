@@ -307,29 +307,62 @@ function start_server
 {
 clear
 cd $SERVER 
+echo
 echo "select a server to start:"
 echo
 echo "**********************************"
 ls RUN_* --format single-column
 echo "**********************************"
 echo
-echo "Input the name of the server to start:"
+echo "Input the name of the server to start or q to quit"
 read NAME
-if [ ! -f "$NAME" ]; then
-echo "no server found or server name cannot to be empty!! "
+if [ ! -f "$NAME" ] ; then
+echo -e "${red}Server Not Found or Server Name Cannot be Empty"
+echo -e "${nc}"
+sleep 02
 start_server
 else
 echo " $NAME server starting... "
 sleep 03
+startserver -f $NAME
 fi
- startserver -f $NAME
+sleep 03
 }
 loop
 #loop function for invalid choice
 function loop
 {
-clear
-echo  
+clear 
+echo 
+red='\033[0;31m'
+green='\033[0;32m'
+brown='\033[0;33m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+ltgray='\033[0;37m'
+whi='\033[0;38m'
+nc='\033[0m'
+
+d=$(date +%H:%M:%S)
+dd=$(date +%H)
+name=$(whoami)
+echo "$d"
+if [ $dd -lt 12 ] ;
+then
+
+echo -e "${red}Good Morning $name"
+elif [ $dd -ge 12 ] && [ $dd -lt 20 ] ;
+then
+echo -e "${red}Good Afternoon $name"
+elif [ $dd -ge 20 ] && [ $dd -lt 24 ] ;
+then
+echo -e "${red}Good Night  $name"
+else
+echo -e "${red}Have a Nice Day $name"
+fi
+echo -e "${nc}"
+echo 
 echo "***************************"
 echo "1.Build adaptive server"
 echo "2.Build Back_Up server"
@@ -341,7 +374,8 @@ echo "7.Install Sample DataBase (Pubs)"
 echo "8.EXIT"
 echo "***************************"
 echo
-echo "Enter a choice : "
+echo -e "${green}Enter a Choice :"
+echo -e "${nc}"
 echo
 read x
 #case
@@ -353,9 +387,12 @@ case $x in
 5) dbtb ;;
 6) xxx ;;
 7) pubs ;;
-8) exit ;;
-*) echo "Wait.. what is that....(:-)"
-echo "Enter a valid choice" 
+8) echo -e "${red}Have a Nice Day "
+echo -e "${red}GOOD BYE.... "
+sleep 03
+exit ;;
+*) echo -e "${brown}Wait... What is That!! "
+echo -e "${brown}Enter a Valid Choice!!" 
 sleep 01
 loop
 esac
@@ -489,7 +526,8 @@ case $devchoice in
 3) devresize ;;
 4) dropdev ;;
 5) mainmenuconnect ;;
-*) echo "Invalid choice"
+*) echo -e "${red}Invalid choice"
+echo -e "${nc}"
 clear
 devmenu
 esac
@@ -605,12 +643,25 @@ loop
 
 #device operations-------------------------------------------------------------------
 
+#wish
+echo 
+d=$(date +%H:%M:%S)
+dd=$(date +%H)
+name=$(whoami)
+echo "$d"
+if [ $dd -lt 12 ] ;
+then
+printf '\e[38;5;196m Good Morning $name \n'
+elif [ $dd -ge 12 ] && [ $dd -lt 20 ] ;
+then
+printf '\e[38;5;196m Good Afternoon $name \n'
+elif [ $dd -ge 20 ] && [ $dd -lt 24 ] ;
+then
+printf '\e[38;5;196m Good Night $name \n'
+else
+printf '\e[38;5;196m Have a Nice Day $name \n'
+fi
 
-
-
-
-#menu
-echo  
 echo "*********************************"
 echo "1.Build adaptive server"
 echo "2.Build Back_Up server"
