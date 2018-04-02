@@ -78,7 +78,7 @@ choice=$("${opn[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
 #read choice
-for choice in $choice
+for choices in $choice
 do
 case $choices in
 1)echo "installings pubs"
