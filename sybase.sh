@@ -327,6 +327,7 @@ sleep 03
 startserver -f $NAME
 fi
 sleep 03
+echo -e "${nc}"
 }
 loop
 #loop function for invalid choice
