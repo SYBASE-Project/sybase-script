@@ -1,6 +1,7 @@
 #!/bin/bash
 
-
+. /$SYBASE/SYBASE.sh
+. /$SYBASE/SYBASE.env
 if [ $(id -u) != "0" ]; then
     echo "You must be the superuser to run this script" >&2
     exit 1
@@ -327,8 +328,9 @@ sleep 03
 startserver -f $NAME
 fi
 sleep 03
-}
 loop
+}
+
 #loop function for invalid choice
 function loop
 {
@@ -444,8 +446,9 @@ echo "--------------------------------------------------------------------------
 echo "use this script path to schedule crontab \"/opt/sybase/ASE-16_0/crontab/dump.sh\" "
 echo " and enter scheluding \"time\"  * * * * *"
 exec crontab -e
-}
 loop
+}
+
 #PUBS 2 INSTALL SCRIPT
 #!/bin/bash
 function pubs
@@ -488,14 +491,11 @@ echo
 xterm -hold -e "isql64 -Usa -S$uname -P$pss -i$pubname" 
 sleep 02
 return 0
-}
 loop
+}
 
 #device operations----------------------------------------------------------------------
-function xxx
-{
-clear
-maindev
+
 function maindev
 {
 clear
@@ -641,43 +641,64 @@ function mainmenuconnect
 {
 loop
 }
-}
-
 #device operations-------------------------------------------------------------------
 
-#wish
+#main menu
+clear
+echo       "  ____  __   __ ____      _     ____   _____  "
+echo       " / ___| \ \ / /| __ )    / \   / ___| | ____| "
+echo       " \___ \  \ V / |  _ \   / _ \  \___ \ |  _|   "
+echo       "  ___) |  | |  | |_) | / ___ \  ___) || |___  "
+echo       " |____/   |_|  |____/ /_/   \_\|____/ |_____| "
+echo       "                                              "
+
+function loop
+{
+clear 
 echo 
+red='\033[0;31m'
+green='\033[0;32m'
+brown='\033[0;33m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+ltgray='\033[0;37m'
+whi='\033[0;38m'
+nc='\033[0m'
+
 d=$(date +%H:%M:%S)
 dd=$(date +%H)
 name=$(whoami)
 echo "$d"
 if [ $dd -lt 12 ] ;
 then
-printf '\e[38;5;196m Good Morning $name \n'
+
+echo -e "${red}Good Morning $name"
 elif [ $dd -ge 12 ] && [ $dd -lt 20 ] ;
 then
-printf '\e[38;5;196m Good Afternoon $name \n'
+echo -e "${red}Good Afternoon $name"
 elif [ $dd -ge 20 ] && [ $dd -lt 24 ] ;
 then
-printf '\e[38;5;196m Good Night $name \n'
+echo -e "${red}Good Night  $name"
 else
-printf '\e[38;5;196m Have a Nice Day $name \n'
+echo -e "${red}Have a Nice Day $name"
 fi
-
-echo "*********************************"
+echo -e "${nc}"
+echo 
+echo "***************************"
 echo "1.Build adaptive server"
 echo "2.Build Back_Up server"
 echo "3.Start Server"
 echo "4.Crontab Schedule"
-echo "5.datbase and table check"
+echo "5.Database and table check"
 echo "6.Device operations"
 echo "7.Install Sample DataBase (Pubs)"
 echo "8.EXIT"
-echo "**********************************"
+echo "***************************"
 echo
-echo "Enter a choice : "
+echo -e "${green}Enter a Choice :"
+echo -e "${nc}"
 echo
-
 read x
 #case
 case $x in
@@ -686,9 +707,17 @@ case $x in
 3) start_server ;;
 4) crontab ;;
 5) dbtb ;;
-6) xxx ;;
+6) maindev ;;
 7) pubs ;;
-8) exit ;;
-*) echo "Enter a valid choice " 
+8) echo -e "${red}Have a Nice Day "
+echo -e "${red}GOOD BYE.... "
+echo 
+sleep 03
+exit ;;
+*) echo -e "${brown}Wait... What is That!! "
+echo -e "${brown}Enter a Valid Choice!!" 
+sleep 01
 loop
 esac
+}
+loop
