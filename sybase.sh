@@ -465,9 +465,9 @@ if [ ! -f $pubname ]; then
 echo "********************************"
 echo "the $pubname not found try again"
 pubs
-elif [ $pubname = "" ]; then
+elif [ ! -f $pubname ]; then
 echo "!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "field cannot to be empty"
+echo "field cannot to be empty or invalid pubs name"
 pubs
 else
 echo "$pubname found and enter required information"
